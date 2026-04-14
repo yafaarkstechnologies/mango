@@ -2,15 +2,17 @@
 
 @layer base {
   :root {
-    --background: #021a02;
+    --background: #050505;
     --foreground: #ffffff;
+    --accent: #facc15; /* Gold */
+    --accent-dark: #854d0e; /* Amber-900 */
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-
+    /* removed transition for better instant performance */
+    
     /* Enable smooth scrolling */
     scroll-behavior: smooth;
     /* Inter is applied via layout.tsx, but ensure fallback */

@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} font-sans bg-[#050505] text-white overflow-x-hidden`}>
+      <body className={`${inter.variable} font-sans bg-[#050505] text-white overflow-x-hidden selection:bg-yellow-500/30`}>
         <CartProvider>
           {children}
         </CartProvider>
