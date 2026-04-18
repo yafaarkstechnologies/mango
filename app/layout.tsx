@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} font-sans bg-[#050505] text-white overflow-x-hidden selection:bg-yellow-500/30`}>
+    <html lang="en" className="light">
+      <body className={`${inter.variable} font-sans bg-[#fafafa] text-zinc-900 overflow-x-hidden selection:bg-yellow-500/30`}>
         <CartProvider>
           {children}
         </CartProvider>

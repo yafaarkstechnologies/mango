@@ -23,7 +23,7 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 rounded-b-3xl ${
-        scrolled ? "bg-[#050505]/80 backdrop-blur-md border-b-[0.5px] border-white/5 py-1.5" : "bg-transparent py-3"
+        scrolled ? "bg-white/80 backdrop-blur-md border-b-[0.5px] border-zinc-200 py-1.5 shadow-sm" : "bg-transparent py-3"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -38,7 +38,7 @@ export default function Navbar() {
             priority
             className="relative z-10 w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-transform duration-500 group-hover:scale-105"
           />
-          <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-yellow-500 hidden md:block">
+          <h1 className={`text-2xl font-black tracking-tighter text-transparent bg-clip-text hidden md:block ${scrolled ? 'bg-gradient-to-r from-amber-600 to-yellow-500' : 'bg-gradient-to-r from-yellow-100 to-yellow-500 backdrop-blur-sm drop-shadow-md'}`}>
             MANGO MAMAJI
           </h1>
         </Link>
@@ -49,7 +49,7 @@ export default function Navbar() {
             <li key={item}>
               <a 
                 href={`#${item.toLowerCase().replace(" ", "-")}`} 
-                className="text-white/60 hover:text-white transition-colors text-sm font-medium tracking-wide uppercase relative group"
+                className={`transition-colors text-sm font-bold tracking-wide uppercase relative group ${scrolled ? 'text-zinc-600 hover:text-zinc-900' : 'text-white/90 hover:text-white drop-shadow-md'}`}
               >
                 {item}
                 <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-yellow-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />

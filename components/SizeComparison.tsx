@@ -12,7 +12,7 @@ const METRICS = [
 
 export default function SizeComparison() {
   return (
-    <section className="relative w-full py-32 bg-[#050505] overflow-hidden">
+    <section className="relative w-full py-32 bg-white overflow-hidden">
       {/* Subtle Background Text */}
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none select-none">
         <span className="text-[20vw] font-black tracking-tighter uppercase">THE SCALE</span>
@@ -25,10 +25,10 @@ export default function SizeComparison() {
               Scale Comparison
             </span>
           </div>
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-zinc-900">
             THE ROYALE <span className="text-yellow-500">DIFFERENCE</span>
           </h2>
-          <p className="text-white/40 max-w-2xl mx-auto mt-6 text-xl font-light">
+          <p className="text-zinc-600 max-w-2xl mx-auto mt-6 text-xl font-light">
             When we say Royale, we mean it. Every Mamaji mango is hand-selected to be significantly larger and heavier than standard market offerings.
           </p>
         </div>
@@ -43,10 +43,10 @@ export default function SizeComparison() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative aspect-square rounded-[2rem] bg-white/[0.02] border border-white/5 p-8 flex flex-col items-center justify-between overflow-hidden group"
+              className="relative aspect-square rounded-[2rem] bg-zinc-50 border border-zinc-200 shadow-sm p-8 flex flex-col items-center justify-between overflow-hidden group"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <span className="relative z-10 text-[10px] uppercase tracking-[0.3em] font-black text-white/20">Common Market</span>
+              <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative z-10 text-[10px] uppercase tracking-[0.3em] font-black text-zinc-400">Common Market</span>
               
               <div className="relative w-full h-1/2">
                 <Image 
@@ -58,8 +58,8 @@ export default function SizeComparison() {
               </div>
 
               <div className="relative z-10 text-center">
-                <p className="text-white/40 text-2xl font-mono">~250g</p>
-                <span className="text-white/10 text-[8px] uppercase tracking-widest font-black">Average Weight</span>
+                <p className="text-zinc-500 text-2xl font-mono">~250g</p>
+                <span className="text-zinc-400 text-[8px] uppercase tracking-widest font-black">Average Weight</span>
               </div>
             </motion.div>
 
@@ -69,7 +69,7 @@ export default function SizeComparison() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="relative aspect-square rounded-[2rem] bg-yellow-500/[0.02] border border-yellow-500/20 p-8 flex flex-col items-center justify-between overflow-hidden group"
+              className="relative aspect-square rounded-[2rem] bg-yellow-500/5 border border-yellow-500/30 p-8 flex flex-col items-center justify-between overflow-hidden group shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/[0.05] to-transparent opacity-100" />
               <span className="relative z-10 text-[10px] uppercase tracking-[0.3em] font-black text-yellow-500">Mamaji Royale</span>
@@ -100,15 +100,15 @@ export default function SizeComparison() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group relative p-7 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-yellow-500/30 transition-all duration-500"
+                className="group relative p-7 rounded-2xl bg-white border border-zinc-200 hover:border-yellow-500/50 shadow-sm transition-all duration-500"
               >
                 <div className="flex justify-between items-center relative z-10">
                   <div className="space-y-1">
-                    <span className="text-white/30 text-[10px] uppercase tracking-widest font-bold font-mono">{metric.label}</span>
+                    <span className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold font-mono">{metric.label}</span>
                     <div className="flex items-center gap-6">
-                        <span className="text-white/20 text-sm line-through decoration-white/10 uppercase font-black">{metric.standard}</span>
-                        <div className="w-8 h-[1px] bg-white/10" />
-                        <span className="text-yellow-500 font-black text-xl uppercase tracking-tight">{metric.royale}</span>
+                        <span className="text-zinc-400 text-sm line-through decoration-zinc-300 uppercase font-black">{metric.standard}</span>
+                        <div className="w-8 h-[1px] bg-zinc-200" />
+                        <span className="text-amber-600 font-black text-xl uppercase tracking-tight">{metric.royale}</span>
                     </div>
                   </div>
                   <div className="w-12 h-12 rounded-full bg-yellow-500/5 border border-yellow-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
@@ -119,7 +119,7 @@ export default function SizeComparison() {
             ))}
             
             <div className="pt-8 text-center lg:text-left">
-              <p className="text-white/20 text-[10px] uppercase tracking-[0.2em] font-black italic">
+              <p className="text-zinc-400 text-[10px] uppercase tracking-[0.2em] font-black italic">
                 *Comparison based on average market weight versus Mamaji's strict selection criteria.
               </p>
             </div>

@@ -8,7 +8,7 @@ function OrderFailedContent() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#021a02] text-white flex flex-col items-center justify-center px-6 py-24 selection:bg-red-500/30">
+    <div className="min-h-screen bg-[#fafafa] text-zinc-900 flex flex-col items-center justify-center px-6 py-24 selection:bg-red-500/30">
       {/* Background glows */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-red-900/20 rounded-full blur-[150px]" />
@@ -57,10 +57,10 @@ function OrderFailedContent() {
           className="space-y-4 mb-10"
         >
           <span className="text-red-400 text-xs font-black uppercase tracking-[0.4em]">Payment Failed</span>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-red-400">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-900 to-red-600">
             Don't Worry!
           </h1>
-          <p className="text-xl text-white/50 font-light">
+          <p className="text-xl text-zinc-600 font-light">
             Your payment was not processed and no amount was deducted. Please try again.
           </p>
         </motion.div>
@@ -69,10 +69,10 @@ function OrderFailedContent() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.7 }}
-          className="w-full bg-white/5 border border-red-500/20 rounded-3xl p-8 mb-10 text-left space-y-4"
+          className="w-full bg-white border border-red-200 shadow-sm rounded-3xl p-8 mb-10 text-left space-y-4"
         >
-          <h3 className="font-bold text-white/80 text-lg">Common Reasons for Failure:</h3>
-          <ul className="space-y-3 text-white/50 text-sm">
+          <h3 className="font-bold text-zinc-800 text-lg">Common Reasons for Failure:</h3>
+          <ul className="space-y-3 text-zinc-600 text-sm">
             <li className="flex items-start gap-3">
               <span className="text-red-400 mt-0.5">→</span>
               Insufficient funds or daily transaction limit reached.
@@ -96,13 +96,13 @@ function OrderFailedContent() {
         >
           <button
             onClick={() => router.push("/checkout")}
-            className="flex-1 py-4 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase tracking-widest transition-all shadow-lg shadow-yellow-900/30 hover:scale-105 active:scale-95"
+            className="flex-1 py-4 rounded-full bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest transition-all shadow-md hover:scale-105 active:scale-95"
           >
             Try Again
           </button>
           <button
             onClick={() => router.push("/")}
-            className="flex-1 py-4 rounded-full border border-white/20 hover:border-white/40 text-white/60 hover:text-white font-bold uppercase tracking-widest transition-all"
+            className="flex-1 py-4 rounded-full border border-zinc-300 hover:border-zinc-500 text-zinc-600 hover:text-zinc-900 font-bold uppercase tracking-widest transition-all shadow-sm"
           >
             Back to Store
           </button>
@@ -112,7 +112,7 @@ function OrderFailedContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
-          className="mt-8 text-white/20 text-xs"
+          className="mt-8 text-zinc-400 text-xs"
         >
           If you continue to face issues, contact us at support@mangomamaji.com
         </motion.p>

@@ -34,7 +34,7 @@ export async function sendOrderConfirmationAction(order: any) {
             ${order_items.map((item: any) => `<li>${item.product_name} x ${item.quantity}</li>`).join('')}
           </ul>
           <p style="color: #666; font-size: 12px; margin-top: 30px;">
-            If you have any questions, please reply to this email or contact us at +91 9594325361.
+            If you have any questions, please reply to this email or contact us at +91 8976066914.
           </p>
         </div>
       `,

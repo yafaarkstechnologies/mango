@@ -72,7 +72,7 @@ function OrderSuccessContent() {
   }, [orderId, paymentId]);
 
   return (
-    <div className="min-h-screen bg-[#021a02] text-white flex flex-col items-center justify-center px-6 py-24 selection:bg-yellow-500/30">
+    <div className="min-h-screen bg-[#fafafa] text-zinc-900 flex flex-col items-center justify-center px-6 py-24 selection:bg-yellow-500/30">
       {/* Background glows */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-500/10 rounded-full blur-[150px]" />
@@ -125,10 +125,10 @@ function OrderSuccessContent() {
           className="space-y-4 mb-10"
         >
           <span className="text-yellow-500 text-xs font-black uppercase tracking-[0.4em]">Order Confirmed</span>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-green-400">
+          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-900 to-amber-600">
             Aapka Swagat Hai!
           </h1>
-          <p className="text-xl text-white/50 font-light">
+          <p className="text-xl text-zinc-600 font-light">
             Your mango box is packed with love. Mamaji will deliver it right to your door! 🥭
           </p>
         </motion.div>
@@ -138,27 +138,27 @@ function OrderSuccessContent() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="w-full bg-white/5 border border-white/10 rounded-3xl p-8 mb-10 text-left space-y-5"
+            className="w-full bg-white border border-zinc-200 shadow-sm rounded-3xl p-8 mb-10 text-left space-y-5"
           >
             <div>
-              <p className="text-xs uppercase tracking-widest text-white/30 mb-1">Customer</p>
+              <p className="text-xs uppercase tracking-widest text-zinc-500 mb-1">Customer</p>
               <p className="text-lg font-bold">{order.customer_name}</p>
-              <p className="text-white/40 text-sm">{order.customer_email}</p>
+              <p className="text-zinc-600 text-sm">{order.customer_email}</p>
             </div>
-            <div className="border-t border-white/10 pt-5">
-              <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Items Ordered</p>
+            <div className="border-t border-zinc-200 pt-5">
+              <p className="text-xs uppercase tracking-widest text-zinc-500 mb-3">Items Ordered</p>
               <div className="space-y-2">
                 {order.order_items?.map((item: any, i: number) => (
                   <div key={i} className="flex justify-between text-sm">
-                    <span className="text-white/70">{item.product_name} × {item.quantity}</span>
-                    <span className="font-mono text-yellow-500/80">₹{(item.price * item.quantity).toFixed(2)}</span>
+                    <span className="text-zinc-700">{item.product_name} × {item.quantity}</span>
+                    <span className="font-mono text-amber-600">₹{(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="border-t border-white/10 pt-5 flex justify-between items-center">
+            <div className="border-t border-zinc-200 pt-5 flex justify-between items-center">
               <span className="font-bold text-lg">Total Paid</span>
-              <span className="text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-green-500">
+              <span className="text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">
                 ₹{Number(order.total_amount).toFixed(2)}
               </span>
             </div>
@@ -173,14 +173,14 @@ function OrderSuccessContent() {
         >
           <button
             onClick={() => router.push("/")}
-            className="flex-1 py-4 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase tracking-widest transition-all shadow-lg shadow-yellow-900/30 hover:scale-105 active:scale-95"
+            className="flex-1 py-4 rounded-full bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest transition-all shadow-md hover:scale-105 active:scale-95"
           >
             Back to Store
           </button>
           {orderId && (
             <button
               onClick={() => router.push(`/invoice?order_id=${orderId}`)}
-              className="flex-1 py-4 rounded-full border border-white/20 hover:border-white/40 text-white/60 hover:text-white font-bold uppercase tracking-widest transition-all"
+              className="flex-1 py-4 rounded-full border border-zinc-300 hover:border-zinc-500 text-zinc-600 hover:text-zinc-900 font-bold uppercase tracking-widest transition-all shadow-sm"
             >
               View Invoice
             </button>
@@ -193,7 +193,7 @@ function OrderSuccessContent() {
 
 export default function OrderSuccess() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#021a02]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#fafafa]" />}>
       <OrderSuccessContent />
     </Suspense>
   );

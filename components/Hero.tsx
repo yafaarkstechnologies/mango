@@ -13,7 +13,7 @@ const FEATURES = [
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center bg-[#050505] pt-20">
+    <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center bg-[#fafafa] pt-20">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-500/5 rounded-full blur-[150px]" />
@@ -32,17 +32,17 @@ export default function Hero() {
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-7xl md:text-8xl font-black tracking-tighter leading-none text-white">
+            <h1 className="text-7xl md:text-8xl font-black tracking-tighter leading-none text-zinc-900">
               YOUR <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-amber-600">MANGO MAMA</span> <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">MANGO MAMA</span> <br/>
               IS HERE.
             </h1>
-            <p className="text-2xl md:text-3xl text-white font-bold tracking-tight">
+            <p className="text-2xl md:text-3xl text-zinc-800 font-bold tracking-tight">
                 Finally, mangoes like mamu used to send.
             </p>
           </div>
 
-          <p className="text-xl text-white/40 max-w-xl font-light leading-relaxed">
+          <p className="text-xl text-zinc-500 max-w-xl font-light leading-relaxed">
             Everyone has that one relative with a farm. Boxes arrive every May, mangoes wrapped in newspaper, smelling like home. We're that relative — for everyone who never had one.
           </p>
 
@@ -56,19 +56,19 @@ export default function Hero() {
             </a>
             <a
               href="#our-story"
-              className="px-10 py-5 rounded-full border border-white/10 hover:bg-white/5 text-white font-bold transition-all text-sm uppercase tracking-widest"
+              className="px-10 py-5 rounded-full border border-zinc-300 hover:bg-zinc-100 text-zinc-800 font-bold transition-all text-sm uppercase tracking-widest"
             >
               See how it works
             </a>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-8 border-t border-white/5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-8 border-t border-zinc-200">
             {FEATURES.map((feature, i) => (
                 <div key={i} className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-yellow-500/20 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#facc15" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                     </div>
-                    <span className="text-[10px] uppercase font-black tracking-widest text-white/40">{feature}</span>
+                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500">{feature}</span>
                 </div>
             ))}
           </div>

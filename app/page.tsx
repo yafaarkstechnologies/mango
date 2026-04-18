@@ -47,7 +47,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white font-sans selection:bg-yellow-500/30">
+    <main className="min-h-screen bg-[#fafafa] text-zinc-900 font-sans selection:bg-yellow-500/30">
       <Navbar />
       <Cart />
 
@@ -64,7 +64,7 @@ export default function Home() {
       <SizeComparison />
 
       {/* Premium E-commerce Section */}
-      <section id="collection" className="relative z-10 w-full min-h-screen bg-[#050505] flex flex-col items-center py-32 px-6">
+      <section id="collection" className="relative z-10 w-full min-h-screen bg-[#fafafa] flex flex-col items-center py-32 px-6">
         <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
 
           <div className="mb-16 inline-flex items-center gap-3 px-4 py-2 rounded-full border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-sm">
@@ -72,11 +72,11 @@ export default function Home() {
             <span className="text-xs uppercase tracking-widest text-yellow-500/80 font-semibold">Limited 2026 Reserve</span>
           </div>
 
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-center mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 uppercase">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-center mb-6 text-zinc-900 uppercase">
             SECURE YOUR BOX.
           </h1>
 
-          <p className="text-xl md:text-2xl text-white/40 text-center max-w-2xl font-light tracking-wide mb-24">
+          <p className="text-xl md:text-2xl text-zinc-500 text-center max-w-2xl font-light tracking-wide mb-24">
             Directly from our orchards. No middlemen. No shortcuts. Just the legacy.
           </p>
 
@@ -84,14 +84,14 @@ export default function Home() {
             {isLoading ? (
               // Premium Skeleton Loader
               [1, 2, 3].map((i) => (
-                <div key={i} className="group relative rounded-3xl border border-white/5 bg-white/5 p-8 animate-pulse">
-                  <div className="w-full aspect-square rounded-2xl bg-white/5 mb-8" />
-                  <div className="h-8 bg-white/10 rounded-lg w-3/4 mb-4" />
-                  <div className="h-4 bg-white/5 rounded-lg w-full mb-2" />
-                  <div className="h-4 bg-white/5 rounded-lg w-5/6 mb-8" />
+                <div key={i} className="group relative rounded-3xl border border-zinc-200 bg-white p-8 animate-pulse shadow-sm">
+                  <div className="w-full aspect-square rounded-2xl bg-zinc-100 mb-8" />
+                  <div className="h-8 bg-zinc-200 rounded-lg w-3/4 mb-4" />
+                  <div className="h-4 bg-zinc-100 rounded-lg w-full mb-2" />
+                  <div className="h-4 bg-zinc-100 rounded-lg w-5/6 mb-8" />
                   <div className="flex justify-between items-center">
-                    <div className="h-10 bg-white/10 rounded-lg w-24" />
-                    <div className="h-12 bg-white/10 rounded-full w-32" />
+                    <div className="h-10 bg-zinc-200 rounded-lg w-24" />
+                    <div className="h-12 bg-zinc-200 rounded-full w-32" />
                   </div>
                 </div>
               ))
@@ -100,8 +100,8 @@ export default function Home() {
                 const isOutOfStock = product.track_inventory && product.stock_quantity <= 0;
                 
                 return (
-                  <div key={product.id} className={`group relative rounded-3xl border border-white/5 bg-white/5 p-8 hover:bg-white/10 transition-all duration-700 flex flex-col cursor-pointer overflow-hidden backdrop-blur-sm ${isOutOfStock ? 'opacity-60 saturate-50' : 'hover:border-yellow-500/30 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)]'}`}>
-                    <div className={`absolute -top-12 -right-12 w-48 h-48 ${isOutOfStock ? 'bg-white/5' : 'bg-yellow-500/10'} rounded-full blur-[80px] group-hover:bg-yellow-500/20 transition-all duration-700`} />
+                  <div key={product.id} className={`group relative rounded-3xl border border-zinc-200 bg-white p-8 transition-all duration-700 flex flex-col cursor-pointer overflow-hidden backdrop-blur-sm shadow-sm ${isOutOfStock ? 'opacity-60 saturate-50' : 'hover:border-zinc-300 hover:shadow-md'}`}>
+                    <div className={`absolute -top-12 -right-12 w-48 h-48 ${isOutOfStock ? 'bg-zinc-100' : 'bg-yellow-500/10'} rounded-full blur-[80px] transition-all duration-700`} />
                     
                     {isOutOfStock && (
                       <div className="absolute top-8 right-8 z-20 px-4 py-1.5 rounded-full bg-red-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-900/40">
@@ -109,27 +109,27 @@ export default function Home() {
                       </div>
                     )}
 
-                    <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 mb-8 flex items-center justify-center border border-white/5 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                      <span className="text-white/20 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
+                    <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 mb-8 flex items-center justify-center border border-zinc-100 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                      <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
                     </div>
 
-                    <h3 className="text-3xl font-black mb-3 tracking-tighter uppercase">{product.name}</h3>
-                    <p className="text-white/50 text-base mb-8 flex-grow leading-relaxed font-light">{product.description}</p>
+                    <h3 className="text-3xl font-black mb-3 tracking-tighter uppercase text-zinc-900">{product.name}</h3>
+                    <p className="text-zinc-600 text-base mb-8 flex-grow leading-relaxed font-light">{product.description}</p>
                     
                     <div className="flex flex-col gap-3 mt-auto">
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col">
-                          <span className="text-xs uppercase tracking-widest text-white/30 font-bold mb-1">Per Dozen</span>
-                          <span className="font-mono text-2xl font-light text-yellow-500/90">₹{Number(product.price).toFixed(2)}</span>
+                          <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold mb-1">Per Dozen</span>
+                          <span className="font-mono text-2xl font-light text-amber-600">₹{Number(product.price).toFixed(2)}</span>
                         </div>
                         <button
                           disabled={isOutOfStock}
                           onClick={() => !isOutOfStock && addToCart({ id: product.id, name: product.name, price: Number(product.price) })}
                           className={`px-8 py-3 rounded-full text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
                             isOutOfStock 
-                              ? 'bg-white/10 text-white/40 cursor-not-allowed' 
-                              : 'bg-yellow-400 hover:bg-yellow-300 text-black shadow-lg shadow-yellow-900/20 hover:shadow-yellow-500/40 hover:scale-105 active:scale-95'
+                              ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed' 
+                              : 'bg-yellow-400 hover:bg-yellow-300 text-black shadow-lg shadow-yellow-900/10 hover:shadow-yellow-500/30 hover:scale-105 active:scale-95'
                           }`}
                         >
                           {isOutOfStock ? "Out of Stock" : (product.name.includes("Royale") ? "Pre-order" : "Buy Now")}
@@ -139,12 +139,12 @@ export default function Home() {
 
                       {/* WhatsApp Alternative Ordering */}
                       <a
-                        href={`https://wa.me/919594325361?text=Hi%20Mango%20Mamaji!%20I'd%20like%20to%20order%20${encodeURIComponent(product.name)}.%20Please%20guide%20me%20on%20the%20next%20steps.`}
+                        href={`https://wa.me/918976066914?text=Hi%20Mango%20Mamaji!%20I'd%20like%20to%20order%20${encodeURIComponent(product.name)}.%20Please%20guide%20me%20on%20the%20next%20steps.`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-3 rounded-2xl border border-white/10 flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-xs uppercase tracking-[0.2em] font-bold group/wa"
+                        className="w-full py-3 rounded-2xl border border-zinc-200 flex items-center justify-center gap-3 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-all text-xs uppercase tracking-[0.2em] font-bold group/wa"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/wa:text-green-500 transition-colors"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/wa:text-green-600 transition-colors"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                         Order via WhatsApp
                       </a>
                     </div>
@@ -163,12 +163,12 @@ export default function Home() {
       <PromiseSection />
 
       {/* Footer */}
-      <footer className="w-full py-24 border-t border-white/10 flex flex-col items-center justify-center bg-[#050505] relative z-20">
-        <div className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-yellow-500 mb-4">
+      <footer className="w-full py-24 border-t border-zinc-200 flex flex-col items-center justify-center bg-white relative z-20">
+        <div className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500 mb-4">
           MANGO MAMAJI
         </div>
-        <p className="text-white/20 text-xs tracking-[0.5em] uppercase mb-8 font-black italic">The Royale Alphonso Relative</p>
-        <p className="text-white/40 text-sm font-light">© 2026 Mango Mamaji. Your family in the farms.</p>
+        <p className="text-zinc-400 text-xs tracking-[0.5em] uppercase mb-8 font-black italic">The Royale Alphonso Relative</p>
+        <p className="text-zinc-500 text-sm font-light">© 2026 Mango Mamaji. Your family in the farms.</p>
       </footer>
     </main>
   );

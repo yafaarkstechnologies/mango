@@ -168,73 +168,73 @@ export default function Checkout() {
   if (items.length === 0) return null;
 
   return (
-    <div className="min-h-screen bg-[#021a02] text-white pt-24 pb-32 selection:bg-yellow-500/30">
+    <div className="min-h-screen bg-[#fafafa] text-zinc-900 pt-24 pb-32 selection:bg-yellow-500/30">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
 
         {/* Left Column - Form */}
         <div>
-          <button onClick={() => router.back()} className="text-white/50 hover:text-white flex items-center gap-2 mb-12 transition-colors uppercase tracking-widest text-xs font-bold">
+          <button onClick={() => router.back()} className="text-zinc-500 hover:text-zinc-900 flex items-center gap-2 mb-12 transition-colors uppercase tracking-widest text-xs font-bold">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
             Return to Store
           </button>
 
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-green-100">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4 text-zinc-900">
             Secure Checkout
           </h1>
-          <p className="text-white/40 mb-12">Please provide your details for the 2026 harvest delivery.</p>
+          <p className="text-zinc-500 mb-12">Please provide your details for the 2026 harvest delivery.</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Full Name</label>
-                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Reginald Mamaji" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Full Name</label>
+                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Reginald Mamaji" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Phone</label>
-                <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="+1 (555) 123-4567" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Phone</label>
+                <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="+1 (555) 123-4567" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Email Address</label>
-              <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="reginald@example.com" />
+              <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="reginald@example.com" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1 space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Flat / House No</label>
-                <input required type="text" name="flat_no" value={formData.flat_no} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="4B" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Flat / House No</label>
+                <input required type="text" name="flat_no" value={formData.flat_no} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="4B" />
               </div>
               <div className="md:col-span-2 space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Address Line 1</label>
-                <input required type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Orchard Lane, Palm Grove" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Address Line 1</label>
+                <input required type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Orchard Lane, Palm Grove" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Address Line 2 (Optional)</label>
-              <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Near Green Valley Park" />
+              <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Near Green Valley Park" />
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">City</label>
-                <input required type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Mumbai" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">City</label>
+                <input required type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Mumbai" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Postal Code</label>
-                <input required type="text" name="zip" value={formData.zip} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="400001" />
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Postal Code</label>
+                <input required type="text" name="zip" value={formData.zip} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="400001" />
               </div>
             </div>
 
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-full py-5 mt-8 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-lg uppercase tracking-[0.2em] shadow-lg shadow-yellow-900/40 transition-all disabled:opacity-50 disabled:cursor-wait"
+              className="w-full py-5 mt-8 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-lg uppercase tracking-[0.2em] shadow-lg transition-all disabled:opacity-50 disabled:cursor-wait"
             >
               {isProcessing ? "Processing..." : "Pay via Razorpay"}
             </button>
-            <p className="text-center text-white/30 text-xs mt-4 flex items-center justify-center gap-2">
+            <p className="text-center text-zinc-400 text-xs mt-4 flex items-center justify-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="rect x='3' y='11' width='18' height='11' rx='2' ry='2'" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
               Secured by Razorpay. 100% Buyer Protection.
             </p>
@@ -242,50 +242,50 @@ export default function Checkout() {
         </div>
 
         {/* Right Column - Order Summary */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12 h-fit sticky top-24">
-          <h2 className="text-xl font-bold mb-8 uppercase tracking-widest text-yellow-500/80">Order Summary</h2>
+        <div className="bg-white border border-zinc-200 shadow-sm rounded-3xl p-8 lg:p-12 h-fit sticky top-24">
+          <h2 className="text-xl font-bold mb-8 uppercase tracking-widest text-zinc-900">Order Summary</h2>
 
           <div className="space-y-6 mb-8 max-h-[40vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
             {items.map(item => (
               <div key={item.id} className="flex gap-4 items-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500/10 to-yellow-500/10 rounded-lg flex items-center justify-center border border-white/10 flex-shrink-0">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-lg flex items-center justify-center border border-amber-100 flex-shrink-0">
                   <Image src="/logo.png" alt="Mango" width={32} height={32} className="opacity-50 blur-[0.5px]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-white font-semibold">{item.name}</h3>
-                  <p className="text-white/40 text-sm">Qty: {item.quantity}</p>
+                  <h3 className="text-zinc-900 font-semibold">{item.name}</h3>
+                  <p className="text-zinc-500 text-sm">Qty: {item.quantity}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-yellow-100">₹{(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-mono text-amber-600 font-bold">₹{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-white/10 pt-6 space-y-4">
-            <div className="flex justify-between text-white/60">
+          <div className="border-t border-zinc-200 pt-6 space-y-4">
+            <div className="flex justify-between text-zinc-600">
               <span>Subtotal</span>
               <span className="font-mono">₹{total.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-zinc-600">
               <span>Delivery Charges</span>
               {shippingLoading ? (
-                <span className="font-mono bg-white/10 animate-pulse rounded w-16 h-5 inline-block" />
+                <span className="font-mono bg-zinc-200 animate-pulse rounded w-16 h-5 inline-block" />
               ) : (
                 <span className="font-mono">₹{shippingRate.toFixed(2)}</span>
               )}
             </div>
-            <div className="flex justify-between text-white/60">
+            <div className="flex justify-between text-zinc-600">
               <span>Taxes</span>
               <span className="font-mono">Included</span>
             </div>
 
-            <div className="border-t border-white/10 mt-6 pt-6 flex justify-between items-center">
+            <div className="border-t border-zinc-200 mt-6 pt-6 flex justify-between items-center text-zinc-900">
               <span className="text-xl font-bold">Total</span>
               {shippingLoading ? (
-                <span className="h-9 w-32 bg-white/10 animate-pulse rounded-xl inline-block" />
+                <span className="h-9 w-32 bg-zinc-200 animate-pulse rounded-xl inline-block" />
               ) : (
-                <span className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-green-500">
+                <span className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">
                   ₹{(total + shippingRate).toFixed(2)}
                 </span>
               )}
