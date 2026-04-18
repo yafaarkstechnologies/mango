@@ -114,7 +114,7 @@ function OrderFailedContent() {
           transition={{ delay: 1.1 }}
           className="mt-8 text-zinc-400 text-xs"
         >
-          If you continue to face issues, contact us at support@mangomamaji.com
+          If you continue to face issues, contact us at support@mangog.com
         </motion.p>
       </motion.div>
     </div>

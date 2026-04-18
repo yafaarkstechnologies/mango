@@ -18,7 +18,7 @@ export async function sendOrderConfirmationAction(order: any) {
 
   try {
     await transporter.sendMail({
-      from: `"Mango Mamaji" <${process.env.SMTP_USER}>`,
+      from: `"Mango G" <${process.env.SMTP_USER}>`,
       to: customer_email,
       subject: `Order Received! - #${id.slice(0, 8)}`,
       html: `
@@ -61,7 +61,7 @@ export async function sendShippingUpdateAction(order: any) {
 
   try {
     await transporter.sendMail({
-      from: `"Mango Mamaji" <${process.env.SMTP_USER}>`,
+      from: `"Mango G" <${process.env.SMTP_USER}>`,
       to: customer_email,
       subject: `Your Mangoes are on the way! - #${id.slice(0, 8)}`,
       html: `
@@ -70,7 +70,7 @@ export async function sendShippingUpdateAction(order: any) {
           <p>Hi ${customer_name}, your order <strong>#${id.slice(0, 8)}</strong> has been shipped and is heading your way.</p>
           <p>Get ready for the sweetest taste of the season!</p>
           <div style="margin-top: 30px; padding: 20px; border-top: 1px solid #eee;">
-            <p>Thank you for choosing Mango Mamaji.</p>
+            <p>Thank you for choosing Mango G.</p>
           </div>
         </div>
       `,

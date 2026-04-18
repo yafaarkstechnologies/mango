@@ -29,7 +29,7 @@ export default function SizeComparison() {
             THE ROYALE <span className="text-yellow-500">DIFFERENCE</span>
           </h2>
           <p className="text-zinc-600 max-w-2xl mx-auto mt-6 text-xl font-light">
-            When we say Royale, we mean it. Every Mamaji mango is hand-selected to be significantly larger and heavier than standard market offerings.
+            When we say Royale, we mean it. Every Mango G mango is hand-selected to be significantly larger and heavier than standard market offerings.
           </p>
         </div>
 
@@ -72,12 +72,12 @@ export default function SizeComparison() {
               className="relative aspect-square rounded-[2rem] bg-yellow-500/5 border border-yellow-500/30 p-8 flex flex-col items-center justify-between overflow-hidden group shadow-sm"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/[0.05] to-transparent opacity-100" />
-              <span className="relative z-10 text-[10px] uppercase tracking-[0.3em] font-black text-yellow-500">Mamaji Royale</span>
+              <span className="relative z-10 text-[10px] uppercase tracking-[0.3em] font-black text-yellow-500">Mango G Royale</span>
               
               <div className="relative w-full h-2/3">
                 <Image 
                   src="/hero-mango-final.png" 
-                  alt="Mamaji Royale Mango" 
+                  alt="Mango G Royale Mango" 
                   fill 
                   className="object-contain drop-shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:scale-110 transition-transform duration-700"
                 />
@@ -120,7 +120,7 @@ export default function SizeComparison() {
             
             <div className="pt-8 text-center lg:text-left">
               <p className="text-zinc-400 text-[10px] uppercase tracking-[0.2em] font-black italic">
-                *Comparison based on average market weight versus Mamaji's strict selection criteria.
+                *Comparison based on average market weight versus Mango G's strict selection criteria.
               </p>
             </div>
           </div>

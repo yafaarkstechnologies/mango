@@ -40,7 +40,7 @@ export default function AdminLogin() {
       >
         <div className="text-center mb-12">
           <h1 className="text-4xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 to-amber-600 uppercase">
-            Mango Mamaji Admin
+            Mango G Admin
           </h1>
           <p className="text-zinc-500 text-sm tracking-widest uppercase font-bold">Basic Access Protection</p>
         </div>

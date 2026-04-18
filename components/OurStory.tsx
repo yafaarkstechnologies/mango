@@ -22,7 +22,7 @@ const STORY_STEPS = [
   },
   {
     title: "Your Mango Mama",
-    content: "Mango Mamaji is here for everyone who never had that farm relative. We bring that missing warmth and authenticity to your May mornings, wrapped in care.",
+    content: "Mango G is here for everyone who never had that farm relative. We bring that missing warmth and authenticity to your May mornings, wrapped in care.",
     highlight: "Belonging",
   }
 ];
@@ -80,11 +80,11 @@ export default function OurStory() {
                      />
                    ) : (
                     <Image 
-                      src="/mamaji-artwork.png" 
-                      alt="Mango Mamaji Artist" 
+                      src="/showcase-box.jpg" 
+                      alt="Mango G Harvest Box" 
                       width={450} 
                       height={450} 
-                      className="object-contain drop-shadow-[0_0_30px_rgba(234,179,8,0.2)] z-20"
+                      className="object-cover w-full h-full drop-shadow-[0_0_30px_rgba(234,179,8,0.2)] z-20"
                     />
                    )}
                 </div>

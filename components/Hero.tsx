@@ -33,12 +33,11 @@ export default function Hero() {
 
           <div className="space-y-4">
             <h1 className="text-7xl md:text-8xl font-black tracking-tighter leading-none text-zinc-900">
-              YOUR <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">MANGO MAMA</span> <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">MANGO G</span> <br />
               IS HERE.
             </h1>
             <p className="text-2xl md:text-3xl text-zinc-800 font-bold tracking-tight">
-                Finally, mangoes like mamu used to send.
+              Finally, mangoes like mamu used to send.
             </p>
           </div>
 
@@ -52,7 +51,7 @@ export default function Hero() {
               className="px-10 py-5 rounded-full bg-yellow-500 text-black font-black uppercase tracking-widest text-sm hover:bg-yellow-400 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(234,179,8,0.3)] flex items-center gap-2"
             >
               Order Now
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
             </a>
             <a
               href="#our-story"
@@ -64,25 +63,25 @@ export default function Hero() {
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-8 border-t border-zinc-200">
             {FEATURES.map((feature, i) => (
-                <div key={i} className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#facc15" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                    </div>
-                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500">{feature}</span>
+              <div key={i} className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#facc15" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                 </div>
+                <span className="text-[10px] uppercase font-black tracking-widest text-zinc-500">{feature}</span>
+              </div>
             ))}
           </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: 1, 
+          animate={{
+            opacity: 1,
             scale: 1,
             y: [0, -20, 0],
           }}
-          transition={{ 
-            duration: 1.2, 
+          transition={{
+            duration: 1.2,
             ease: "easeOut",
             y: {
               duration: 4,

@@ -6,7 +6,7 @@ import { CartProvider } from "@/lib/store";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Mango Mamaji | The 2026 Harvest",
+  title: "Mango G | The 2026 Harvest",
   description: "Curated, hand-picked premium mangoes straight from the ancestral farms.",
 };
 

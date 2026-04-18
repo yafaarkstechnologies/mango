@@ -103,7 +103,7 @@ export default function Checkout() {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: Math.round((total + shippingRate) * 100),
       currency: "INR",
-      name: "Mango Mamaji",
+      name: "Mango G",
       description: "Harvest 2026 Pre-order",
       // order_id is intentionally omitted for test mode (no server-side order creation)
       handler: async function (response: any) {
@@ -187,7 +187,7 @@ export default function Checkout() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Full Name</label>
-                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Reginald Mamaji" />
+                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Reginald Mango G" />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Phone</label>

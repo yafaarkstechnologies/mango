@@ -129,7 +129,7 @@ function OrderSuccessContent() {
             Aapka Swagat Hai!
           </h1>
           <p className="text-xl text-zinc-600 font-light">
-            Your mango box is packed with love. Mamaji will deliver it right to your door! 🥭
+            Your mango box is packed with love. Mango G will deliver it right to your door! 🥭
           </p>
         </motion.div>
 

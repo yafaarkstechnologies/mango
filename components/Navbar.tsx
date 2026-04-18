@@ -32,14 +32,14 @@ export default function Navbar() {
            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/30 to-amber-500/30 blur-2xl rounded-full scale-0 group-hover:scale-[2.0] transition-transform duration-700" />
            <Image 
             src="/logo.png" 
-            alt="Mango Mamaji Logo" 
+            alt="Mango G Logo" 
             width={80} 
             height={80} 
             priority
             className="relative z-10 w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-transform duration-500 group-hover:scale-105"
           />
           <h1 className={`text-2xl font-black tracking-tighter text-transparent bg-clip-text hidden md:block ${scrolled ? 'bg-gradient-to-r from-amber-600 to-yellow-500' : 'bg-gradient-to-r from-yellow-100 to-yellow-500 backdrop-blur-sm drop-shadow-md'}`}>
-            MANGO MAMAJI
+            mango g
           </h1>
         </Link>
 
