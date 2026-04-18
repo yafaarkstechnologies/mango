@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -27,7 +28,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo left */}
-        <div className="flex items-center gap-4 relative cursor-pointer group">
+        <Link href="/" className="flex items-center gap-4 relative cursor-pointer group">
            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/30 to-amber-500/30 blur-2xl rounded-full scale-0 group-hover:scale-[2.0] transition-transform duration-700" />
            <Image 
             src="/logo.png" 
@@ -40,7 +41,7 @@ export default function Navbar() {
           <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-yellow-500 hidden md:block">
             MANGO MAMAJI
           </h1>
-        </div>
+        </Link>
 
         {/* Navigation links center */}
         <ul className="hidden md:flex items-center gap-8">

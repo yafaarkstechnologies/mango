@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-export default function OrderFailed() {
+function OrderFailedContent() {
   const router = useRouter();
 
   return (
@@ -117,5 +118,13 @@ export default function OrderFailed() {
         </motion.p>
       </motion.div>
     </div>
+  );
+}
+
+export default function OrderFailed() {
+  return (
+    <Suspense fallback={null}>
+      <OrderFailedContent />
+    </Suspense>
   );
 }

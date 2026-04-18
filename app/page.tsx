@@ -19,6 +19,8 @@ interface Product {
   price: number;
   category: string;
   image_placeholder: string;
+  stock_quantity: number;
+  track_inventory: boolean;
 }
 
 export default function Home() {
@@ -94,33 +96,61 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              products.map((product) => (
-                <div key={product.id} className="group relative rounded-3xl border border-white/5 bg-white/5 p-8 hover:bg-white/10 transition-all duration-700 flex flex-col cursor-pointer overflow-hidden backdrop-blur-sm hover:border-yellow-500/30 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)]">
-                  <div className={`absolute -top-12 -right-12 w-48 h-48 bg-yellow-500/10 rounded-full blur-[80px] group-hover:bg-yellow-500/20 transition-all duration-700`} />
-                  
-                  <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 mb-8 flex items-center justify-center border border-white/5 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                    <span className="text-white/20 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
-                  </div>
+              products.map((product) => {
+                const isOutOfStock = product.track_inventory && product.stock_quantity <= 0;
+                
+                return (
+                  <div key={product.id} className={`group relative rounded-3xl border border-white/5 bg-white/5 p-8 hover:bg-white/10 transition-all duration-700 flex flex-col cursor-pointer overflow-hidden backdrop-blur-sm ${isOutOfStock ? 'opacity-60 saturate-50' : 'hover:border-yellow-500/30 hover:shadow-[0_0_50px_rgba(234,179,8,0.1)]'}`}>
+                    <div className={`absolute -top-12 -right-12 w-48 h-48 ${isOutOfStock ? 'bg-white/5' : 'bg-yellow-500/10'} rounded-full blur-[80px] group-hover:bg-yellow-500/20 transition-all duration-700`} />
+                    
+                    {isOutOfStock && (
+                      <div className="absolute top-8 right-8 z-20 px-4 py-1.5 rounded-full bg-red-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-900/40">
+                        Sold Out
+                      </div>
+                    )}
 
-                  <h3 className="text-3xl font-black mb-3 tracking-tighter uppercase">{product.name}</h3>
-                  <p className="text-white/50 text-base mb-8 flex-grow leading-relaxed font-light">{product.description}</p>
-                  
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex flex-col">
-                      <span className="text-xs uppercase tracking-widest text-white/30 font-bold mb-1">Per Dozen</span>
-                      <span className="font-mono text-2xl font-light text-yellow-500/90">₹{Number(product.price).toFixed(2)}</span>
+                    <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 mb-8 flex items-center justify-center border border-white/5 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                      <span className="text-white/20 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
                     </div>
-                    <button
-                      onClick={() => addToCart({ id: product.id, name: product.name, price: Number(product.price) })}
-                      className="px-8 py-3 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black text-sm font-black uppercase tracking-widest shadow-lg shadow-yellow-900/20 hover:shadow-yellow-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
-                    >
-                      {product.name.includes("Royale") ? "Pre-order" : "Buy Now"}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/><path d="M5 12h14"/></svg>
-                    </button>
+
+                    <h3 className="text-3xl font-black mb-3 tracking-tighter uppercase">{product.name}</h3>
+                    <p className="text-white/50 text-base mb-8 flex-grow leading-relaxed font-light">{product.description}</p>
+                    
+                    <div className="flex flex-col gap-3 mt-auto">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-xs uppercase tracking-widest text-white/30 font-bold mb-1">Per Dozen</span>
+                          <span className="font-mono text-2xl font-light text-yellow-500/90">₹{Number(product.price).toFixed(2)}</span>
+                        </div>
+                        <button
+                          disabled={isOutOfStock}
+                          onClick={() => !isOutOfStock && addToCart({ id: product.id, name: product.name, price: Number(product.price) })}
+                          className={`px-8 py-3 rounded-full text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
+                            isOutOfStock 
+                              ? 'bg-white/10 text-white/40 cursor-not-allowed' 
+                              : 'bg-yellow-400 hover:bg-yellow-300 text-black shadow-lg shadow-yellow-900/20 hover:shadow-yellow-500/40 hover:scale-105 active:scale-95'
+                          }`}
+                        >
+                          {isOutOfStock ? "Out of Stock" : (product.name.includes("Royale") ? "Pre-order" : "Buy Now")}
+                          {!isOutOfStock && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/><path d="M5 12h14"/></svg>}
+                        </button>
+                      </div>
+
+                      {/* WhatsApp Alternative Ordering */}
+                      <a
+                        href={`https://wa.me/919594325361?text=Hi%20Mango%20Mamaji!%20I'd%20like%20to%20order%20${encodeURIComponent(product.name)}.%20Please%20guide%20me%20on%20the%20next%20steps.`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3 rounded-2xl border border-white/10 flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-xs uppercase tracking-[0.2em] font-bold group/wa"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/wa:text-green-500 transition-colors"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Order via WhatsApp
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

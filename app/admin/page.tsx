@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { sendShippingUpdateAction } from "@/app/actions/email";
 import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,12 +20,26 @@ interface Batch {
   created_at: string;
 }
 
+interface Product {
+  id: string;
+  name: string;
+  stock_quantity: number;
+  track_inventory: boolean;
+  price: number;
+}
+
 interface Order {
   id: string;
   created_at: string;
   customer_name: string;
   customer_email: string;
-  customer_address: string;
+  customer_address: string; // Keep for legacy
+  flat_no?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  city?: string;
+  zip?: string;
+  customer_phone?: string;
   total_amount: number;
   payment_id: string;
   status: string;
@@ -35,13 +50,16 @@ interface Order {
 export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [activeTab, setActiveTab] = useState<"orders" | "batches" | "settings">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "batches" | "products" | "settings">("orders");
   const [newBatchName, setNewBatchName] = useState("");
   const [batchFilter, setBatchFilter] = useState<string>("all");
   const [editingBatch, setEditingBatch] = useState<Batch | null>(null);
   const [editName, setEditName] = useState("");
+  const [selectedOrderIds, setSelectedOrderIds] = useState<Set<string>>(new Set());
+  const [isExporting, setIsExporting] = useState(false);
   
   // Settings state
   const [shippingRate, setShippingRate] = useState<string>("45");
@@ -72,6 +90,15 @@ export default function AdminDashboard() {
 
     if (bError) console.error("Error fetching batches:", bError);
     else setBatches(bData || []);
+
+    // Fetch Products
+    const { data: pData, error: pError } = await supabase
+      .from('products')
+      .select('*')
+      .order('name', { ascending: true });
+    
+    if (pError) console.error("Error fetching products:", pError);
+    else setProducts(pData || []);
 
     // Fetch Settings
     const { data: sData, error: sError } = await supabase
@@ -143,6 +170,19 @@ export default function AdminDashboard() {
     }
   };
 
+  const updateProduct = async (id: string, updates: Partial<Product>) => {
+    const { error } = await supabase
+      .from('products')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      alert(`Error updating product: ${error.message}`);
+    } else {
+      fetchData();
+    }
+  };
+
   const deleteBatch = async (id: string) => {
     if (!confirm("Are you sure? This will not delete the orders, but they will no longer be associated with this batch.")) return;
 
@@ -175,6 +215,79 @@ export default function AdminDashboard() {
     ? orders 
     : orders.filter(o => o.batch_id === batchFilter);
 
+  const toggleOrderSelection = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newSelected = new Set(selectedOrderIds);
+    if (newSelected.has(id)) newSelected.delete(id);
+    else newSelected.add(id);
+    setSelectedOrderIds(newSelected);
+  };
+
+  const selectAllFiltered = () => {
+    if (selectedOrderIds.size === filteredOrders.length) {
+      setSelectedOrderIds(new Set());
+    } else {
+      setSelectedOrderIds(new Set(filteredOrders.map(o => o.id)));
+    }
+  };
+
+  const bulkUpdateStatus = async (status: string) => {
+    if (selectedOrderIds.size === 0) return;
+    
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .in('id', Array.from(selectedOrderIds));
+
+    if (error) alert("Error updating orders");
+    else {
+      alert(`Updated ${selectedOrderIds.size} orders to ${status}`);
+      
+      // Send shipping update emails if status is shipped
+      if (status === 'shipped') {
+        const shippedOrders = orders.filter(o => selectedOrderIds.has(o.id));
+        for (const order of shippedOrders) {
+           await sendShippingUpdateAction(order);
+        }
+      }
+
+      setSelectedOrderIds(new Set());
+      fetchData();
+    }
+  };
+
+  const exportToCSV = () => {
+    setIsExporting(true);
+    const headers = ["Order ID", "Date", "Customer Name", "Email", "Phone", "Flat No", "Address 1", "Address 2", "City", "Zip", "Amount", "Items", "Status"];
+    const rows = filteredOrders.map(o => [
+      o.id,
+      new Date(o.created_at).toLocaleDateString(),
+      o.customer_name,
+      o.customer_email,
+      o.customer_phone || "",
+      o.flat_no || "",
+      o.address_line_1 || "",
+      o.address_line_2 || "",
+      o.city || "",
+      o.zip || "",
+      o.total_amount,
+      o.order_items.map(i => `${i.product_name} (x${i.quantity})`).join("; "),
+      o.status
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers, ...rows].map(e => e.map(String).map(s => `"${s.replace(/"/g, '""')}"`).join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `orders_${batchFilter === 'all' ? 'all' : batches.find(b => b.id === batchFilter)?.name}_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setIsExporting(false);
+  };
+
 
   return (
     <main className="min-h-screen bg-[#021a02] text-white font-sans selection:bg-yellow-500/30 pb-20">
@@ -206,6 +319,12 @@ export default function AdminDashboard() {
               Batches
             </button>
             <button 
+              onClick={() => setActiveTab('products')}
+              className={`px-8 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'products' ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-900/20' : 'text-white/40 hover:text-white'}`}
+            >
+              Inventory
+            </button>
+            <button 
               onClick={() => setActiveTab('settings')}
               className={`px-8 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-all duration-300 ${activeTab === 'settings' ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-900/20' : 'text-white/40 hover:text-white'}`}
             >
@@ -233,8 +352,46 @@ export default function AdminDashboard() {
                     exit={{ opacity: 0, x: -20 }}
                     className="space-y-4"
                   >
+                    {/* Bulk Actions & Export Bar */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                      <div className="flex items-center gap-4">
+                        <button 
+                          onClick={selectAllFiltered}
+                          className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors"
+                        >
+                          {selectedOrderIds.size === filteredOrders.length ? 'Deselect All' : 'Select All'}
+                        </button>
+                        {selectedOrderIds.size > 0 && (
+                          <div className="flex items-center gap-2 pl-4 border-l border-white/10">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-yellow-500">{selectedOrderIds.size} Selected</span>
+                            <button 
+                              onClick={() => bulkUpdateStatus('shipped')}
+                              className="px-3 py-1 bg-green-500/20 text-green-500 text-[10px] font-black uppercase rounded-lg border border-green-500/20 hover:bg-green-500/30 transition-all"
+                            >
+                              Mark Shipped
+                            </button>
+                            <button 
+                              onClick={() => bulkUpdateStatus('cancelled')}
+                              className="px-3 py-1 bg-red-500/20 text-red-500 text-[10px] font-black uppercase rounded-lg border border-red-500/20 hover:bg-red-500/30 transition-all"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <button 
+                        onClick={exportToCSV}
+                        disabled={isExporting}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                        {isExporting ? 'Exporting...' : 'Export CSV'}
+                      </button>
+                    </div>
+
                     {/* Filter Bar */}
-                    <div className="flex items-center gap-4 mb-8 bg-white/5 p-4 rounded-2xl border border-white/5 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5 overflow-x-auto no-scrollbar">
                       <span className="text-[10px] uppercase tracking-widest text-white/30 font-bold whitespace-nowrap">Filter by Batch:</span>
                       <button 
                         onClick={() => setBatchFilter('all')}
@@ -267,9 +424,18 @@ export default function AdminDashboard() {
                             selectedOrder?.id === order.id 
                               ? 'bg-yellow-500/10 border-yellow-500/30' 
                               : 'bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/1'
-                          }`}
+                          } ${selectedOrderIds.has(order.id) ? 'ring-2 ring-yellow-500/50' : ''}`}
                         >
-                          <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-6">
+                            <div 
+                              onClick={(e) => toggleOrderSelection(order.id, e)}
+                              className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                                selectedOrderIds.has(order.id) ? 'bg-yellow-400 border-yellow-400' : 'border-white/20'
+                              }`}
+                            >
+                              {selectedOrderIds.has(order.id) && <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                            </div>
+                            <div className="flex flex-col gap-1">
                             <span className="font-mono text-xs text-white/30 uppercase tracking-tighter">
                               {new Date(order.created_at).toLocaleDateString()}
                               {order.batch_id && <span className="ml-2 text-yellow-500/50">Batch: {batches.find(b => b.id === order.batch_id)?.name || 'Unknown'}</span>}
@@ -277,11 +443,20 @@ export default function AdminDashboard() {
                             <h3 className="text-xl font-bold">{order.customer_name}</h3>
                             <span className="text-white/40 text-sm truncate max-w-[200px]">{order.customer_email}</span>
                           </div>
+                          </div>
 
                           <div className="flex items-center gap-8">
-                            <div className="flex flex-col items-end">
-                              <span className="text-xs uppercase tracking-widest text-white/20 font-bold">Total</span>
-                              <span className="text-xl font-mono text-yellow-500/90">₹{Number(order.total_amount).toFixed(2)}</span>
+                            <div className="flex flex-col items-end gap-2">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter ${
+                                order.status === 'shipped' ? 'bg-green-500/20 text-green-500' : 
+                                order.status === 'paid' ? 'bg-blue-500/20 text-blue-500' : 'bg-white/10 text-white/40'
+                              }`}>
+                                {order.status}
+                              </span>
+                              <div className="flex flex-col items-end">
+                                <span className="text-xs uppercase tracking-widest text-white/20 font-bold">Total</span>
+                                <span className="text-xl font-mono text-yellow-500/90">₹{Number(order.total_amount).toFixed(2)}</span>
+                              </div>
                             </div>
                           </div>
                         </motion.div>
@@ -361,9 +536,23 @@ export default function AdminDashboard() {
                           )}
                           
                           <div className="flex justify-between items-end">
-                            <div className="text-white/40 text-xs">
-                              Orders: <span className="text-white font-mono">{orders.filter(o => o.batch_id === batch.id).length}</span>
+                            <div className="flex-1 mr-4">
+                              <div className="flex justify-between text-[10px] uppercase font-bold text-white/20 mb-1.5">
+                                <span>Capacity</span>
+                                <span>{Math.round((orders.filter(o => o.batch_id === batch.id).length / (batch.max_capacity || 50)) * 100)}%</span>
+                              </div>
+                              <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                                <motion.div 
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${Math.min(100, (orders.filter(o => o.batch_id === batch.id).length / (batch.max_capacity || 50)) * 100)}%` }}
+                                  className={`h-full ${orders.filter(o => o.batch_id === batch.id).length >= (batch.max_capacity || 50) ? 'bg-red-500' : 'bg-yellow-400/50'}`}
+                                />
+                              </div>
                             </div>
+                            <div className="text-white/40 text-xs whitespace-nowrap">
+                              Orders: <span className="text-white font-mono">{orders.filter(o => o.batch_id === batch.id).length}</span> / {batch.max_capacity || 50}
+                            </div>
+                          </div>
                             {batch.status === 'active' && !editingBatch && (
                               <button 
                                 onClick={() => closeBatch(batch.id)}
@@ -372,6 +561,77 @@ export default function AdminDashboard() {
                                 Close Batch
                               </button>
                             )}
+                          </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ) : activeTab === 'products' ? (
+                  <motion.div
+                    key="inventory-panel"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-1 gap-6">
+                      {products.map((product) => (
+                        <div key={product.id} className="bg-white/5 p-8 rounded-[2rem] border border-white/10 backdrop-blur-sm group">
+                          <div className="flex flex-col md:flex-row justify-between gap-8">
+                            <div className="flex-grow">
+                              <h3 className="text-2xl font-black mb-2 tracking-tight uppercase">{product.name}</h3>
+                              <p className="text-white/30 text-xs font-mono mb-6 italic">ID: {product.id}</p>
+                              
+                              <div className="flex flex-wrap gap-4">
+                                <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Status:</span>
+                                  {product.stock_quantity > 0 ? (
+                                    <span className="text-[10px] font-black uppercase text-green-500">In Stock</span>
+                                  ) : (
+                                    <span className="text-[10px] font-black uppercase text-red-500">Sold Out</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Price:</span>
+                                  <span className="text-[10px] font-black text-yellow-500">₹{product.price}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col md:items-end justify-center gap-6 min-w-[280px]">
+                              <div className="flex items-center gap-4">
+                                <span className="text-xs uppercase tracking-widest font-bold text-white/40">Stock Quantity:</span>
+                                <div className="flex items-center bg-black/40 rounded-xl border border-white/10 overflow-hidden">
+                                  <button 
+                                    onClick={() => updateProduct(product.id, { stock_quantity: Math.max(0, product.stock_quantity - 1) })}
+                                    className="px-4 py-2 hover:bg-white/5 text-white/60 hover:text-white transition-colors border-r border-white/10"
+                                  >
+                                    -
+                                  </button>
+                                  <input 
+                                    type="number" 
+                                    value={product.stock_quantity}
+                                    onChange={(e) => updateProduct(product.id, { stock_quantity: parseInt(e.target.value) || 0 })}
+                                    className="w-16 bg-transparent text-center font-mono text-lg focus:outline-none"
+                                  />
+                                  <button 
+                                    onClick={() => updateProduct(product.id, { stock_quantity: product.stock_quantity + 1 })}
+                                    className="px-4 py-2 hover:bg-white/5 text-white/60 hover:text-white transition-colors border-l border-white/10"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-4">
+                                <span className="text-xs uppercase tracking-widest font-bold text-white/40">Track Inventory:</span>
+                                <button 
+                                  onClick={() => updateProduct(product.id, { track_inventory: !product.track_inventory })}
+                                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${product.track_inventory ? 'bg-yellow-400' : 'bg-white/10'}`}
+                                >
+                                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-black transition-all duration-300 ${product.track_inventory ? 'left-7' : 'left-1'}`} />
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -459,9 +719,19 @@ export default function AdminDashboard() {
 
                         <div>
                           <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-3">Shipping Address</label>
-                          <div className="bg-white/5 rounded-2xl p-4 space-y-1 border border-white/5">
-                            <p className="text-white/80 text-sm leading-relaxed">{(selectedOrder as any).address || selectedOrder.customer_address || "N/A"}</p>
-                            <p className="text-white/50 text-sm">{(selectedOrder as any).city || ""}{(selectedOrder as any).zip ? `, ${(selectedOrder as any).zip}` : ""}</p>
+                          <div className="bg-white/5 rounded-2xl p-4 space-y-2 border border-white/5">
+                            {selectedOrder.flat_no || selectedOrder.address_line_1 ? (
+                              <>
+                                <p className="text-white/80 text-sm font-bold">{selectedOrder.flat_no ? `Flat/House: ${selectedOrder.flat_no}` : ''}</p>
+                                <p className="text-white/80 text-sm leading-relaxed">{selectedOrder.address_line_1}</p>
+                                {selectedOrder.address_line_2 && <p className="text-white/50 text-xs italic">{selectedOrder.address_line_2}</p>}
+                              </>
+                            ) : (
+                              <p className="text-white/80 text-sm leading-relaxed">{selectedOrder.customer_address || "N/A"}</p>
+                            )}
+                            <p className="text-white/50 text-sm pt-2 border-t border-white/5">
+                              {selectedOrder.city || "Mumbai"}{selectedOrder.zip ? `, ${selectedOrder.zip}` : ""}
+                            </p>
                           </div>
                         </div>
 

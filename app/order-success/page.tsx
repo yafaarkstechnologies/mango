@@ -8,19 +8,68 @@ import { supabase } from "@/lib/supabase";
 function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const paymentId = searchParams.get("payment_id");
   const orderId = searchParams.get("order_id");
   const [order, setOrder] = useState<any>(null);
+  const [status, setStatus] = useState<"loading" | "success" | "verifying">("loading");
 
   useEffect(() => {
-    if (orderId) {
-      supabase
-        .from("orders")
-        .select("*, order_items(*)")
-        .eq("id", orderId)
-        .single()
-        .then(({ data }) => setOrder(data));
+    let interval: NodeJS.Timeout;
+
+    const fetchOrder = async () => {
+      // 1. Try fetching by order_id first
+      if (orderId) {
+        const { data } = await supabase
+          .from("orders")
+          .select("*, order_items(*)")
+          .eq("id", orderId)
+          .single();
+        if (data) {
+          setOrder(data);
+          setStatus("success");
+          return true;
+        }
+      }
+
+      // 2. Try fetching by payment_id
+      if (paymentId) {
+        const { data } = await supabase
+          .from("orders")
+          .select("*, order_items(*)")
+          .eq("payment_id", paymentId)
+          .single();
+        if (data) {
+          setOrder(data);
+          setStatus("success");
+          return true;
+        }
+      }
+      return false;
+    };
+
+    if (orderId || paymentId) {
+      fetchOrder().then((found) => {
+        if (!found && paymentId) {
+          setStatus("verifying");
+          // Poll every 2 seconds for up to 10 seconds
+          let attempts = 0;
+          interval = setInterval(async () => {
+            attempts++;
+            const foundNow = await fetchOrder();
+            if (foundNow || attempts >= 5) {
+              clearInterval(interval);
+              if (!foundNow) setStatus("success"); // Just show the generic success if still not found
+            }
+          }, 2000);
+        } else if (found) {
+          setStatus("success");
+        }
+      });
     }
-  }, [orderId]);
+
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId, paymentId]);
 
   return (
     <div className="min-h-screen bg-[#021a02] text-white flex flex-col items-center justify-center px-6 py-24 selection:bg-yellow-500/30">

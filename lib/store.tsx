@@ -73,13 +73,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = (id: string, delta: number) => {
     setItems((prev) =>
-      prev.map((item) => {
+      prev.reduce<CartItem[]>((acc, item) => {
         if (item.id === id) {
           const newQuantity = item.quantity + delta;
-          return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
+          if (newQuantity > 0) acc.push({ ...item, quantity: newQuantity });
+          // If newQuantity <= 0, item is dropped (removed from cart)
+        } else {
+          acc.push(item);
         }
-        return item;
-      })
+        return acc;
+      }, [])
     );
   };
 

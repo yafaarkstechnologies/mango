@@ -20,13 +20,18 @@ export default function Checkout() {
     name: "",
     email: "",
     phone: "",
-    address: "",
+    flat_no: "",
+    address_line_1: "",
+    address_line_2: "",
     city: "",
     zip: "",
   });
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [shippingRate, setShippingRate] = useState<number>(45);
   const [shippingLoading, setShippingLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   // Fetch active batch and shipping rate on load
   useEffect(() => {
@@ -64,12 +69,12 @@ export default function Checkout() {
   }, []);
 
 
-  // Redirect to home if cart is empty
+  // Redirect to home if cart is empty (only after mount to avoid flash)
   useEffect(() => {
-    if (items.length === 0) {
+    if (mounted && items.length === 0) {
       router.push("/");
     }
-  }, [items, router]);
+  }, [items, router, mounted]);
 
   const loadRazorpay = () => {
     return new Promise((resolve) => {
@@ -102,60 +107,10 @@ export default function Checkout() {
       description: "Harvest 2026 Pre-order",
       // order_id is intentionally omitted for test mode (no server-side order creation)
       handler: async function (response: any) {
-        try {
-            const paymentId = response.razorpay_payment_id || `test_${Date.now()}`;
-            
-            // 1. Create the order in Supabase
-            const { data: order, error: orderError } = await supabase
-                .from('orders')
-                .insert({
-                    customer_name: formData.name,
-                    customer_email: formData.email,
-                    customer_phone: formData.phone || "N/A",
-                    address: formData.address,
-                    city: formData.city,
-                    zip: formData.zip,
-                    total_amount: total + shippingRate,
-                    payment_id: paymentId,
-                    status: 'paid',
-                    batch_id: activeBatchId || null
-                })
-                .select()
-                .single();
-
-            if (orderError) {
-              console.error("❌ Order insert error:", orderError);
-              throw orderError;
-            }
-            console.log("✅ Order inserted:", order.id);
-
-            // 2. Create the order items in Supabase
-            const orderItems = items.map(item => ({
-                order_id: order.id,
-                product_name: item.name,
-                quantity: item.quantity,
-                price: item.price
-            }));
-
-            const { error: itemsError } = await supabase
-                .from('order_items')
-                .insert(orderItems);
-
-            if (itemsError) {
-              console.error("❌ Order items insert error:", itemsError);
-              throw itemsError;
-            }
-            console.log("✅ Order items inserted. Redirecting to success...");
-
-            // 3. Clear cart and redirect to success
-            clearCart();
-            router.push(`/order-success?order_id=${order.id}`);
-        } catch (error: any) {
-            console.error("💥 Order processing failed:", error);
-            alert(`Order saved failed: ${error?.message || "Unknown error"}. Payment ID: ${response.razorpay_payment_id || "N/A"}`);
-            clearCart();
-            router.push(`/order-success?order_id=${mockOrderId}&payment_id=${response.razorpay_payment_id || "N/A"}`);
-        }
+        // Clear cart and redirect to success immediately
+        // The webhook handles order creation in the background
+        clearCart();
+        router.push(`/order-success?payment_id=${response.razorpay_payment_id}&verifying=true`);
       },
       prefill: {
         name: formData.name,
@@ -163,10 +118,19 @@ export default function Checkout() {
         contact: formData.phone,
       },
       notes: {
-        address: formData.address,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        flat_no: formData.flat_no,
+        address_line_1: formData.address_line_1,
+        address_line_2: formData.address_line_2,
+        city: formData.city,
+        zip: formData.zip,
+        batch_id: activeBatchId || "",
+        items: JSON.stringify(items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })))
       },
       theme: {
-        color: "#22c55e",
+        color: "#FACC15",
       },
       modal: {
         ondismiss: () => {
@@ -177,6 +141,13 @@ export default function Checkout() {
     };
 
     const paymentObject = new window.Razorpay(options);
+    
+    // Explicitly handle modal closure if the ondismiss in options fails
+    paymentObject.on('modal.closed', () => {
+      setIsProcessing(false);
+      router.push("/order-failed?reason=Payment+was+cancelled");
+    });
+
     paymentObject.open();
 
     paymentObject.on("payment.failed", function (response: any) {
@@ -229,9 +200,20 @@ export default function Checkout() {
               <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="reginald@example.com" />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-1 space-y-2">
+                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Flat / House No</label>
+                <input required type="text" name="flat_no" value={formData.flat_no} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="4B" />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Address Line 1</label>
+                <input required type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Orchard Lane, Palm Grove" />
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Shipping Address</label>
-              <input required type="text" name="address" value={formData.address} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="123 Orchard Lane, Suite 4B" />
+              <label className="text-sm font-semibold uppercase tracking-widest text-white/50">Address Line 2 (Optional)</label>
+              <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-colors" placeholder="Near Green Valley Park" />
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -286,7 +268,7 @@ export default function Checkout() {
               <span className="font-mono">₹{total.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-white/60">
-              <span>International Shipping</span>
+              <span>Delivery Charges</span>
               {shippingLoading ? (
                 <span className="font-mono bg-white/10 animate-pulse rounded w-16 h-5 inline-block" />
               ) : (
