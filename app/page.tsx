@@ -100,9 +100,21 @@ export default function Home() {
                       </div>
                     )}
 
-                    <div className="w-full aspect-square rounded-2xl bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10 mb-8 flex items-center justify-center border border-zinc-100 relative overflow-hidden">
+                    <div className="w-full aspect-square rounded-2xl bg-zinc-50 mb-8 flex items-center justify-center border border-zinc-100 relative overflow-hidden">
+                      {product.image_placeholder ? (
+                        <Image
+                          src={product.image_placeholder}
+                          alt={product.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-transparent to-amber-500/10" />
+                          <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
+                        </>
+                      )}
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                      <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest z-10">{product.category}</span>
                     </div>
 
                     <h3 className="text-3xl font-black mb-3 tracking-tighter uppercase text-zinc-900">{product.name}</h3>
@@ -116,7 +128,12 @@ export default function Home() {
                         </div>
                         <button
                           disabled={isOutOfStock}
-                          onClick={() => !isOutOfStock && addToCart({ id: product.id, name: product.name, price: Number(product.price) })}
+                          onClick={() => !isOutOfStock && addToCart({ 
+                            id: product.id, 
+                            name: product.name, 
+                            price: Number(product.price),
+                            image: product.image_placeholder || undefined
+                          })}
                           className={`px-8 py-3 rounded-full text-sm font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${isOutOfStock
                             ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed'
                             : 'bg-yellow-400 hover:bg-yellow-300 text-black shadow-lg shadow-yellow-900/10 hover:shadow-yellow-500/30 hover:scale-105 active:scale-95'

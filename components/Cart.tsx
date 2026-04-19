@@ -69,9 +69,20 @@ export default function Cart() {
                     ) : (
                         items.map(item => (
                             <div key={item.id} className="flex gap-6 items-center group relative p-4 rounded-xl hover:bg-zinc-50 transition-colors">
-                                <div className="w-24 h-24 bg-gradient-to-br from-yellow-500/10 to-amber-500/10 rounded-xl flex items-center justify-center border border-amber-200 flex-shrink-0 relative overflow-hidden">
-                                   <div className="absolute inset-0 bg-yellow-500/5 blur-xl"></div>
-                                   <Image src="/logo.png" alt="Mango" width={48} height={48} className="opacity-60 blur-[0.5px] z-10 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]"/>
+                                <div className="w-24 h-24 bg-zinc-50 rounded-xl flex items-center justify-center border border-zinc-100 flex-shrink-0 relative overflow-hidden">
+                                   {item.image ? (
+                                     <Image 
+                                       src={item.image} 
+                                       alt={item.name} 
+                                       fill 
+                                       className="object-cover"
+                                     />
+                                   ) : (
+                                     <>
+                                       <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-amber-500/10" />
+                                       <Image src="/logo.png" alt="Mango" width={48} height={48} className="opacity-60 blur-[0.5px] z-10 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]"/>
+                                     </>
+                                   )}
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="text-xl text-zinc-900 font-bold">{item.name}</h3>

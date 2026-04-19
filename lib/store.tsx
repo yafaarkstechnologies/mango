@@ -7,6 +7,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
+  image?: string;
 }
 
 interface CartContextType {
@@ -59,7 +60,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existing = prev.find((item) => item.id === newItem.id);
       if (existing) {
         return prev.map((item) =>
-          item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === newItem.id ? { ...item, quantity: item.quantity + 1, image: newItem.image } : item
         );
       }
       return [...prev, { ...newItem, quantity: 1 }];
