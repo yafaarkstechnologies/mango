@@ -11,6 +11,7 @@ import Cart from "@/components/Cart";
 import { useCart } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -123,7 +124,7 @@ export default function Home() {
                     <div className="flex flex-col gap-3 mt-auto">
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col">
-                          <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold mb-1">Per Dozen</span>
+                          <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold mb-1">10 pcs</span>
                           <span className="font-mono text-2xl font-light text-amber-600">₹{Number(product.price).toFixed(2)}</span>
                         </div>
                         <button
