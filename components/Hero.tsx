@@ -1,7 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
+import ProductCard from "./ProductCard";
 
 const FEATURES = [
   "Tree-to-box in 24 hrs",
@@ -12,6 +15,25 @@ const FEATURES = [
 ];
 
 export default function Hero() {
+  const [featuredProduct, setFeaturedProduct] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchFeatured() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (!error) {
+        setFeaturedProduct(data);
+      }
+    }
+    fetchFeatured();
+  }, []);
+
   return (
     <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center bg-[#fafafa] pt-20">
       {/* Background Glow */}
@@ -48,18 +70,24 @@ export default function Hero() {
           <div className="flex flex-wrap gap-4 pt-4">
             <a
               href="#collection"
-              className="px-10 py-5 rounded-full bg-yellow-500 text-black font-black uppercase tracking-widest text-sm hover:bg-yellow-400 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(234,179,8,0.3)] flex items-center gap-2"
+              className="px-8 py-4 md:px-10 md:py-5 rounded-full bg-yellow-500 text-black font-black uppercase tracking-widest text-[10px] md:text-sm hover:bg-yellow-400 transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(234,179,8,0.2)] md:shadow-[0_0_30px_rgba(234,179,8,0.3)] flex items-center gap-2"
             >
               Order Now
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
             </a>
             <a
               href="#our-story"
-              className="px-10 py-5 rounded-full border border-zinc-300 hover:bg-zinc-100 text-zinc-800 font-bold transition-all text-sm uppercase tracking-widest"
+              className="px-8 py-4 md:px-10 md:py-5 rounded-full border border-zinc-300 hover:bg-zinc-100 text-zinc-800 font-bold transition-all text-[10px] md:text-sm uppercase tracking-widest"
             >
               See how it works
             </a>
           </div>
+
+          {featuredProduct && (
+            <div className="lg:hidden w-full">
+              <ProductCard product={featuredProduct} />
+            </div>
+          )}
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 pt-8 border-t border-zinc-200">
             {FEATURES.map((feature, i) => (
