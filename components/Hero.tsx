@@ -89,7 +89,7 @@ export default function Hero() {
               ease: "easeInOut"
             }
           }}
-          className="relative aspect-square flex items-center justify-center"
+          className="relative aspect-square hidden lg:flex items-center justify-center"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent rounded-full blur-[100px] animate-pulse" />
           <Image
