@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { loginAdmin } from "@/app/actions/admin-auth";
+import { loginAdminAction } from "@/app/actions/admin-auth";
 
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
@@ -16,7 +16,7 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError(null);
 
-    const result = await loginAdmin(password);
+    const result = await loginAdminAction(password);
 
     if (result.success) {
       router.push("/admin");

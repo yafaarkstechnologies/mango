@@ -62,11 +62,14 @@ export async function POST(req: Request) {
       address_line_1: notes.address_line_1,
       address_line_2: notes.address_line_2,
       city: notes.city,
+      state: notes.state,
       zip: notes.zip,
       total_amount: payment.amount / 100,
       payment_id: payment.id,
       status: 'paid',
-      batch_id: notes.batch_id || null
+      batch_id: notes.batch_id || null,
+      coupon_id: notes.coupon_id || null,
+      discount_amount: notes.discount_amount ? parseFloat(notes.discount_amount) : 0
     };
 
     const { data: order, error: orderError } = await supabase
@@ -78,6 +81,27 @@ export async function POST(req: Request) {
     if (orderError) {
       console.error('Webhook Error: Order insertion failed', orderError);
       return NextResponse.json({ error: 'Order insertion failed' }, { status: 500 });
+    }
+
+    // 2.5 INCREMENT COUPON USAGE
+    if (notes.coupon_id) {
+      try {
+        const { data: coupon } = await supabase
+          .from('coupons')
+          .select('used_count')
+          .eq('id', notes.coupon_id)
+          .single();
+        
+        if (coupon) {
+          await supabase
+            .from('coupons')
+            .update({ used_count: (coupon.used_count || 0) + 1 })
+            .eq('id', notes.coupon_id);
+          console.log('Webhook: Coupon usage incremented for:', notes.coupon_id);
+        }
+      } catch (e) {
+        console.error('Webhook Error: Coupon increment failed', e);
+      }
     }
 
     // 3. CREATE ORDER ITEMS & DECREMENT INVENTORY
@@ -114,6 +138,23 @@ export async function POST(req: Request) {
                 .eq('id', item.id);
               
               console.log(`Inventory updated for ${item.name}: ${product.stock_quantity} -> ${newStock}`);
+            }
+
+            // Update batch stock if applicable
+            if (notes.batch_id) {
+              const { data: batch } = await supabase
+                .from('batches')
+                .select('current_stock')
+                .eq('id', notes.batch_id)
+                .single();
+              
+              if (batch) {
+                const newBatchStock = Math.max(0, (batch.current_stock || 0) - item.quantity);
+                await supabase
+                  .from('batches')
+                  .update({ current_stock: newBatchStock })
+                  .eq('id', notes.batch_id);
+              }
             }
           }
         }

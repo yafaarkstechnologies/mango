@@ -2,12 +2,11 @@
 
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
-// Initialize a server-side client
-// We use the anon key here, but because it's on the server, we can verify the session ourselves
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function updateProductStockAction(id: string, updates: any) {
   const cookieStore = await cookies();
@@ -17,9 +16,6 @@ export async function updateProductStockAction(id: string, updates: any) {
     return { success: false, error: "Unauthorized" };
   }
 
-  // NOTE: If RLS is still blocking this "authenticated" call from the server,
-  // we would need the SERVICE_ROLE_KEY to bypass it entirely.
-  // For now, we try with the standard client.
   const { error } = await supabase
     .from("products")
     .update(updates)
@@ -30,5 +26,6 @@ export async function updateProductStockAction(id: string, updates: any) {
     return { success: false, error: error.message };
   }
 
+  revalidatePath("/admin/inventory");
   return { success: true };
 }

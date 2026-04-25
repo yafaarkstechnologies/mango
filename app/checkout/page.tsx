@@ -1,5 +1,7 @@
 "use client";
 
+import { validateCouponAction } from "@/app/actions/coupons";
+import { getGlobalSettings } from "@/lib/admin";
 import { useCart } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -24,12 +26,18 @@ export default function Checkout() {
     address_line_1: "",
     address_line_2: "",
     city: "",
+    state: "",
     zip: "",
   });
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
   const [shippingRate, setShippingRate] = useState<number>(45);
   const [shippingLoading, setShippingLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponData, setCouponData] = useState<any>(null);
+  const [couponError, setCouponError] = useState("");
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+  const [harvestYear, setHarvestYear] = useState("2026");
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -66,7 +74,31 @@ export default function Checkout() {
 
     fetchActiveBatch();
     fetchShippingRate();
+
+    // Fetch global settings
+    async function fetchSettings() {
+      const settings = await getGlobalSettings();
+      if (settings?.harvest_year) {
+        setHarvestYear(settings.harvest_year);
+      }
+    }
+    fetchSettings();
   }, []);
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return;
+    setIsValidatingCoupon(true);
+    setCouponError("");
+    
+    const result = await validateCouponAction(couponCode, total);
+    if (result.success) {
+      setCouponData(result.data);
+    } else {
+      setCouponError(result.error || "Invalid coupon");
+      setCouponData(null);
+    }
+    setIsValidatingCoupon(false);
+  };
 
 
   // Redirect to home if cart is empty (only after mount to avoid flash)
@@ -101,10 +133,10 @@ export default function Checkout() {
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: Math.round((total + shippingRate) * 100),
+      amount: Math.round((total + shippingRate - (couponData?.discount_amount || 0)) * 100),
       currency: "INR",
       name: "Mango G",
-      description: "Harvest 2026 Pre-order",
+      description: `Harvest ${harvestYear} Pre-order`,
       // order_id is intentionally omitted for test mode (no server-side order creation)
       handler: async function (response: any) {
         // Clear cart and redirect to success immediately
@@ -125,8 +157,11 @@ export default function Checkout() {
         address_line_1: formData.address_line_1,
         address_line_2: formData.address_line_2,
         city: formData.city,
+        state: formData.state,
         zip: formData.zip,
         batch_id: activeBatchId || "",
+        coupon_id: couponData?.id || "",
+        discount_amount: couponData?.discount_amount || 0,
         items: JSON.stringify(items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price })))
       },
       theme: {
@@ -216,12 +251,16 @@ export default function Checkout() {
               <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Near Green Valley Park" />
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">City</label>
                 <input required type="text" name="city" value={formData.city} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Mumbai" />
               </div>
               <div className="space-y-2">
+                <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">State</label>
+                <input required type="text" name="state" value={formData.state} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="Maharashtra" />
+              </div>
+              <div className="space-y-2 col-span-2 md:col-span-1">
                 <label className="text-sm font-semibold uppercase tracking-widest text-zinc-500">Postal Code</label>
                 <input required type="text" name="zip" value={formData.zip} onChange={handleChange} className="w-full bg-white border border-zinc-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 focus:bg-zinc-50 transition-colors placeholder:text-zinc-300 text-zinc-900" placeholder="400001" />
               </div>
@@ -262,22 +301,57 @@ export default function Checkout() {
             ))}
           </div>
 
+          {/* Coupon Code Section */}
+          <div className="mb-8 p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="PROMO CODE" 
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-amber-400 uppercase font-bold tracking-widest"
+              />
+              <button 
+                onClick={handleApplyCoupon}
+                disabled={isValidatingCoupon || !couponCode}
+                className="bg-zinc-900 text-white px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:opacity-50"
+              >
+                {isValidatingCoupon ? "..." : "Apply"}
+              </button>
+            </div>
+            {couponError && <p className="text-red-500 text-[10px] mt-2 font-bold uppercase tracking-widest">{couponError}</p>}
+            {couponData && (
+              <div className="flex justify-between items-center mt-3 text-[11px] font-bold uppercase tracking-widest text-emerald-600">
+                <span>Code Applied: {couponData.code}</span>
+                <button onClick={() => setCouponData(null)} className="text-zinc-400 hover:text-zinc-600">Remove</button>
+              </div>
+            )}
+          </div>
+
           <div className="border-t border-zinc-200 pt-6 space-y-4">
             <div className="flex justify-between text-zinc-600">
               <span>Subtotal</span>
               <span className="font-mono">₹{total.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-zinc-600">
+            <div className="flex justify-between text-zinc-600 text-sm">
               <span>Delivery Charges</span>
               {shippingLoading ? (
                 <span className="font-mono bg-zinc-200 animate-pulse rounded w-16 h-5 inline-block" />
               ) : (
-                <span className="font-mono">₹{shippingRate.toFixed(2)}</span>
+                <span className="font-mono text-zinc-900">₹{shippingRate.toFixed(2)}</span>
               )}
             </div>
-            <div className="flex justify-between text-zinc-600">
+            
+            {couponData && (
+              <div className="flex justify-between text-emerald-600 text-sm font-bold uppercase tracking-widest">
+                <span>Discount ({couponData.code})</span>
+                <span className="font-mono">-₹{couponData.discount_amount.toFixed(2)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between text-zinc-500 text-xs">
               <span>Taxes</span>
-              <span className="font-mono">Included</span>
+              <span className="italic uppercase tracking-widest">Included</span>
             </div>
 
             <div className="border-t border-zinc-200 mt-6 pt-6 flex justify-between items-center text-zinc-900">
@@ -285,8 +359,8 @@ export default function Checkout() {
               {shippingLoading ? (
                 <span className="h-9 w-32 bg-zinc-200 animate-pulse rounded-xl inline-block" />
               ) : (
-                <span className="text-3xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-500">
-                  ₹{(total + shippingRate).toFixed(2)}
+                <span className="text-3xl font-mono text-zinc-900">
+                  ₹{(total + shippingRate - (couponData?.discount_amount || 0)).toFixed(2)}
                 </span>
               )}
             </div>

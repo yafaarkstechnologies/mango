@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export async function loginAdmin(password: string) {
+export async function loginAdminAction(password: string) {
   const correctPassword = process.env.ADMIN_PASSWORD || "mango2026";
 
   if (password === correctPassword) {

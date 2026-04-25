@@ -11,6 +11,7 @@ import Cart from "@/components/Cart";
 import { useCart } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { getGlobalSettings } from "@/lib/admin";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 
@@ -29,9 +30,15 @@ export default function Home() {
   const { addToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [harvestYear, setHarvestYear] = useState("2026");
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchData() {
+      // Fetch settings
+      const settings = await getGlobalSettings();
+      setHarvestYear(settings.harvest_year);
+
+      // Fetch products
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -45,7 +52,7 @@ export default function Home() {
       }
       setIsLoading(false);
     }
-    fetchProducts();
+    fetchData();
   }, []);
 
   return (
@@ -72,7 +79,7 @@ export default function Home() {
 
           <div className="mb-16 inline-flex items-center gap-3 px-4 py-2 rounded-full border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-            <span className="text-xs uppercase tracking-widest text-yellow-500/80 font-semibold">Limited 2026 Reserve</span>
+            <span className="text-xs uppercase tracking-widest text-yellow-500/80 font-semibold">Limited {harvestYear} Reserve</span>
           </div>
 
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-center mb-6 text-zinc-900 uppercase">
@@ -120,7 +127,7 @@ export default function Home() {
           mango g
         </div>
         <p className="text-zinc-400 text-xs tracking-[0.5em] uppercase mb-8 font-black italic">The Royale Alphonso Relative</p>
-        <p className="text-zinc-500 text-sm font-light">© 2026 Mango G. Your family in the farms.</p>
+        <p className="text-zinc-500 text-sm font-light">© {harvestYear} Mango G. Your family in the farms.</p>
       </footer>
     </main>
   );

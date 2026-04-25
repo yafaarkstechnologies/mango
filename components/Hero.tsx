@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { getGlobalSettings } from "@/lib/admin";
 import Image from "next/image";
 import ProductCard from "./ProductCard";
 
@@ -16,9 +17,15 @@ const FEATURES = [
 
 export default function Hero() {
   const [featuredProduct, setFeaturedProduct] = useState<any>(null);
+  const [harvestYear, setHarvestYear] = useState("2026");
 
   useEffect(() => {
-    async function fetchFeatured() {
+    async function fetchData() {
+      // Fetch settings
+      const settings = await getGlobalSettings();
+      setHarvestYear(settings.harvest_year);
+
+      // Fetch featured product
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -31,7 +38,7 @@ export default function Hero() {
         setFeaturedProduct(data);
       }
     }
-    fetchFeatured();
+    fetchData();
   }, []);
 
   return (
@@ -50,7 +57,7 @@ export default function Hero() {
         >
           <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-sm w-fit group">
             <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-            <span className="text-xs uppercase tracking-[0.3em] text-yellow-500 font-black">✦ Season 2026 — Now Open for Orders</span>
+            <span className="text-xs uppercase tracking-[0.3em] text-yellow-500 font-black">✦ Season {harvestYear} — Now Open for Orders</span>
           </div>
 
           <div className="space-y-4">
@@ -122,7 +129,7 @@ export default function Hero() {
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent rounded-full blur-[100px] animate-pulse" />
           <Image
             src="/hero-mango-final.png"
-            alt="Season 2026 Premium Royale Mango"
+            alt={`Season ${harvestYear} Premium Royale Mango`}
             width={800}
             height={800}
             priority
