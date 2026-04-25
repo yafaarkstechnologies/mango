@@ -3,13 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 import { sendOrderConfirmationAction } from '@/app/actions/email';
 import crypto from 'crypto';
 
-// Use service role key to bypass RLS for secure server-side order creation
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 export async function POST(req: Request) {
+  // Use service role key to bypass RLS for secure server-side order creation
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   const body = await req.text();
   const signature = req.headers.get('x-razorpay-signature');
   const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
